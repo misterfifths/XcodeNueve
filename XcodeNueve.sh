@@ -13,7 +13,7 @@ check_file_exists() {
 }
 
 check_sha256() {
-    if [ `openssl dgst -sha256 "$1" | sed -E 's/SHA(2-)?256(.*)= //'` != "$2" ]; then
+    if [ "`openssl dgst -sha256 "$1" | sed -E 's/SHA(2-)?256(.*)= //'`" != "$2" ]; then
         echo "$0: $1 has an unexpected checksum. Is this an unmodified copy of Xcode 9.4.1?"
         exit 1
     fi
@@ -58,7 +58,7 @@ check_sha256 "$XCODE/Contents/PlugIns/IDEInterfaceBuilderKit.framework/Versions/
              "c8d45ddd9e1334554cc57ee9bb1bc437920f599710aa81b1cbe144fa7ee59740"
 
 # Do a test codesign to check that the given identity exists before we start modifying files
-codesign --dryrun -f -s $IDENTITY "$XCODE/Contents/Developer/usr/bin/xcodebuild"
+codesign --dryrun -f -s "$IDENTITY" "$XCODE/Contents/Developer/usr/bin/xcodebuild"
 
 # Change reference in DVTKit from _OBJC_IVAR_$_NSFont._fFlags to _OBJC_IVAR_$_NSCell._cFlags
 echo "4E534365 6C6C2E5F 63466C61 6773" |  xxd -r -p -s 0x478967 - "$XCODE/Contents/SharedFrameworks/DVTKit.framework/Versions/A/DVTKit"
@@ -89,8 +89,8 @@ fi
 rm -rf "$XCODE/Contents/PlugIns/DebuggerLLDB.ideplugin"
 rm -rf "$XCODE/Contents/SharedFrameworks/LLDB.framework"
 
-codesign -f -s $IDENTITY "$XCODE/Contents/SharedFrameworks/DVTKit.framework"
-codesign -f -s $IDENTITY "$XCODE"
-codesign -f -s $IDENTITY "$XCODE/Contents/SharedFrameworks/DVTDocumentation.framework"
-codesign -f -s $IDENTITY "$XCODE/Contents/Frameworks/IDEFoundation.framework"
-codesign -f -s $IDENTITY "$XCODE/Contents/Developer/usr/bin/xcodebuild"
+codesign -f -s "$IDENTITY" "$XCODE/Contents/SharedFrameworks/DVTKit.framework"
+codesign -f -s "$IDENTITY" "$XCODE"
+codesign -f -s "$IDENTITY" "$XCODE/Contents/SharedFrameworks/DVTDocumentation.framework"
+codesign -f -s "$IDENTITY" "$XCODE/Contents/Frameworks/IDEFoundation.framework"
+codesign -f -s "$IDENTITY" "$XCODE/Contents/Developer/usr/bin/xcodebuild"
